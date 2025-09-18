@@ -29,6 +29,7 @@ public class McpRequestHandler {
         logger.debug("McpHandler auth={}", auth);
         logger.debug("McpHandler path={}", path);
 
+
         Optional<HandlerFunction<ServerResponse>> handlerFunctionOptional = mcpServerService.getProviders().get("test").getRouterFunction().route(request);
         if (handlerFunctionOptional.isPresent()) {
             return handlerFunctionOptional.get().handle(request);

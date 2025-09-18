@@ -24,8 +24,8 @@ public class SecurityConfiguration {
         http
                 // Protect all endpoints with OAuth2
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/sse").authenticated()
-                        .anyRequest().permitAll()
+                        .requestMatchers("/.well-known/**").permitAll()
+                        .anyRequest().authenticated()
                 )
 
                 // Enable OAuth2 Resource Server support

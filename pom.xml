@@ -59,4 +59,25 @@
         </plugins>
     </build>
 
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <env.BASE_SERVER_URL>localhost</env.BASE_SERVER_URL>
+            </properties>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <env.BASE_SERVER_URL>https://zdh-swa-muenker.zdh.thm.de</env.BASE_SERVER_URL>
+            </properties>
+        </profile>
+    </profiles>
+
 </project>

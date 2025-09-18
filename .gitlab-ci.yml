@@ -6,7 +6,7 @@ cache:
 
 variables:
   DOCKER_IMAGE_APP: $CI_REGISTRY_IMAGE:latest
-  CONTAINER_NAME: "$CI_PROJECT_NAME"
+  CONTAINER_NAME: "GroMoKoSo_$CI_PROJECT_NAME"
   MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
 
 stages:
@@ -33,7 +33,7 @@ stages:
     - docker stop $CONTAINER_NAME || true
     - docker rm $CONTAINER_NAME || true
     - docker network create internal_net || true
-    - docker run -d --network=internal_net -v /home/swt2025/$CONTAINER_NAME/data:/app/data --restart=always --name $CONTAINER_NAME $DOCKER_IMAGE
+    - docker run -e SPRING_PROFILES_ACTIVE=prod -d --network=internal_net -v /home/swt2025/$CONTAINER_NAME/data:/app/data --restart=always --name $CONTAINER_NAME $DOCKER_IMAGE
   services:
     - docker:dind
   tags:

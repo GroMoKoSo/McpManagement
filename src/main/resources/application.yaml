@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: mcpmanagement
+  ai:
+    mcp:
+      server:
+        enabled: false
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AUTH_ISS_URI}
+    realm: ${KEYCLOAK_REALM}
+  server:
+    base-url: ${SERVER_BASE_URL}
+    mcp: ${SERVER_MCP}
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  server:
+    base-url: localhost
+    mcp: :8080
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: localhost:9000/realms/GroMoKoSo
+    realm: GroMoKoSo
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  server:
+    base-url: https://zdh-swa-muenker.zdh.thm.de
+    mcp: /GroMoKoSo_mcpManagement
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://zdh-swa-muenker.zdh.thm.de/keycloak/realms/swa2025
+    realm: swa2025
