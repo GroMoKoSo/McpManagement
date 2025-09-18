@@ -30,6 +30,7 @@ stages:
   stage: deploy
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker logs $CONTAINER_NAME || true
     - docker stop $CONTAINER_NAME || true
     - docker rm $CONTAINER_NAME || true
     - docker network create internal_net || true
