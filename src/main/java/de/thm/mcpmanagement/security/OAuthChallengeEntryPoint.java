@@ -18,7 +18,7 @@ public class OAuthChallengeEntryPoint implements AuthenticationEntryPoint {
     @Value("${spring.server.base-url}")
     private String serverBaseUrl;
 
-    @Value("${spring.server.mcp}")
+    @Value("${spring.server.servlet.context-path}")
     private String mcp;
 
     @Override

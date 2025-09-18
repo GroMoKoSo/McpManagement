@@ -1,6 +1,9 @@
 package de.thm.mcpmanagement.configuration;
 
+import de.thm.mcpmanagement.controller.McpRequestHandler;
 import de.thm.mcpmanagement.security.OAuthChallengeEntryPoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -14,6 +17,9 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfiguration {
 
     private final OAuthChallengeEntryPoint challengeEntryPoint;
+
+    private final Logger logger = LoggerFactory.getLogger(McpRequestHandler.class);
+
 
     public SecurityConfiguration(OAuthChallengeEntryPoint challengeEntryPoint) {
         this.challengeEntryPoint = challengeEntryPoint;

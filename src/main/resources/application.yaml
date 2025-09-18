@@ -13,7 +13,12 @@ spring:
     realm: ${KEYCLOAK_REALM}
   server:
     base-url: ${SERVER_BASE_URL}
-    mcp: ${SERVER_MCP}
+    servlet:
+      context-path: ${SERVER_MCP}
+
+logging:
+  level:
+    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
 
 ---
 spring:
@@ -21,8 +26,9 @@ spring:
     activate:
       on-profile: dev
   server:
-    base-url: localhost:8080
-    mcp: ""
+    base-url: http://localhost:8080
+    servlet:
+      context-path: ""
   security:
     oauth2:
       resourceserver:
@@ -37,7 +43,8 @@ spring:
       on-profile: prod
   server:
     base-url: https://zdh-swa-muenker.zdh.thm.de
-    mcp: /gromokoso_mcpmanagement
+    servlet:
+      context-path: /gromokoso_mcpmanagement
   security:
     oauth2:
       resourceserver:
