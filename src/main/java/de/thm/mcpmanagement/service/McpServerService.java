@@ -7,6 +7,7 @@ import io.modelcontextprotocol.server.McpServer;
 import io.modelcontextprotocol.server.McpServerFeatures;
 import io.modelcontextprotocol.server.transport.WebMvcSseServerTransportProvider;
 import io.modelcontextprotocol.spec.McpSchema;
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,7 +42,10 @@ public class McpServerService {
     public McpServerService() {
         servers = new HashMap<>();
         providers = new HashMap<>();
+    }
 
+    @PostConstruct
+    public void init() {
         WebMvcSseServerTransportProvider provider = new WebMvcSseServerTransportProvider(new ObjectMapper(), mcpBaseUrl,
                 "/mcp/message", "/sse");
 
