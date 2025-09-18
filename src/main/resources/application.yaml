@@ -13,8 +13,7 @@ spring:
     realm: ${KEYCLOAK_REALM}
   server:
     base-url: ${SERVER_BASE_URL}
-    servlet:
-      context-path: ${SERVER_MCP}
+    mcp: ${SERVER_MCP}
 
 logging:
   level:
@@ -26,9 +25,8 @@ spring:
     activate:
       on-profile: dev
   server:
-    base-url: http://localhost:8080
-    servlet:
-      context-path: ""
+    base-url: localhost:8080
+    mcp: ""
   security:
     oauth2:
       resourceserver:
@@ -43,8 +41,7 @@ spring:
       on-profile: prod
   server:
     base-url: https://zdh-swa-muenker.zdh.thm.de
-    servlet:
-      context-path: /gromokoso_mcpmanagement
+    mcp: /gromokoso_mcpmanagement
   security:
     oauth2:
       resourceserver:

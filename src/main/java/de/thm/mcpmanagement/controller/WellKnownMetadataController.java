@@ -17,7 +17,7 @@ public class WellKnownMetadataController {
     @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
     private String issuerUri;
 
-    @Value("${spring.server.servlet.context-path}")
+    @Value("${spring.server.mcp}")
     private String mcp;
 
     private final Logger logger = LoggerFactory.getLogger(WellKnownMetadataController.class);
