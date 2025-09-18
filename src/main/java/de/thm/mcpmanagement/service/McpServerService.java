@@ -23,9 +23,6 @@ import java.util.function.Function;
 @Service
 public class McpServerService {
 
-    @Value("${spring.server.mcp}")
-    private String mcpBaseUrl;
-
     private static final Logger logger = LoggerFactory.getLogger(McpServerService.class);
 
     public Map<String, McpAsyncServer> getServers() {
@@ -46,7 +43,7 @@ public class McpServerService {
 
     @PostConstruct
     public void init() {
-        WebMvcSseServerTransportProvider provider = new WebMvcSseServerTransportProvider(new ObjectMapper(), mcpBaseUrl,
+        WebMvcSseServerTransportProvider provider = new WebMvcSseServerTransportProvider(new ObjectMapper(),
                 "/mcp/message", "/sse");
 
         McpSchema.ServerCapabilities capabilities = McpSchema.ServerCapabilities.builder()
