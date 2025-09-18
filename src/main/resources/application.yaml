@@ -21,14 +21,14 @@ spring:
     activate:
       on-profile: dev
   server:
-    base-url: localhost
-    mcp: :8080
+    base-url: localhost:8080
+    mcp: ""
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: localhost:9000/realms/GroMoKoSo
-    realm: GroMoKoSo
+          issuer-uri: localhost:9000/realms/gromokoso
+    realm: gromokoso
 
 ---
 spring:
@@ -37,7 +37,7 @@ spring:
       on-profile: prod
   server:
     base-url: https://zdh-swa-muenker.zdh.thm.de
-    mcp: /GroMoKoSo_mcpManagement
+    mcp: /gromokoso_mcpManagement
   security:
     oauth2:
       resourceserver:

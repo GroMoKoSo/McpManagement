@@ -9,6 +9,7 @@ import io.modelcontextprotocol.server.transport.WebMvcSseServerTransportProvider
 import io.modelcontextprotocol.spec.McpSchema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import reactor.core.publisher.Mono;
@@ -20,6 +21,9 @@ import java.util.function.Function;
 
 @Service
 public class McpServerService {
+
+    @Value("${spring.server.mcp}")
+    private String mcpBaseUrl;
 
     private static final Logger logger = LoggerFactory.getLogger(McpServerService.class);
 
@@ -38,7 +42,7 @@ public class McpServerService {
         servers = new HashMap<>();
         providers = new HashMap<>();
 
-        WebMvcSseServerTransportProvider provider = new WebMvcSseServerTransportProvider(new ObjectMapper(),
+        WebMvcSseServerTransportProvider provider = new WebMvcSseServerTransportProvider(new ObjectMapper(), mcpBaseUrl,
                 "/mcp/message", "/sse");
 
         McpSchema.ServerCapabilities capabilities = McpSchema.ServerCapabilities.builder()
