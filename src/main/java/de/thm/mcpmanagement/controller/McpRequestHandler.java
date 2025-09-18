@@ -34,6 +34,7 @@ public class McpRequestHandler {
         if (handlerFunctionOptional.isPresent()) {
             return handlerFunctionOptional.get().handle(request);
         }
+        logger.warn("No HandlerFunction found for path={}", path);
         return ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 }
