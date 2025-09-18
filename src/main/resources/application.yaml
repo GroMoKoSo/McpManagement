@@ -19,6 +19,7 @@ logging:
   level:
     org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
     de.thm.mcpmanagement: DEBUG
+    io.modelcontextprotocol: DEBUG
 
 ---
 spring:

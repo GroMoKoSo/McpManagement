@@ -32,6 +32,7 @@ public class McpRequestHandler {
 
         Optional<HandlerFunction<ServerResponse>> handlerFunctionOptional = mcpServerService.getProviders().get("test").getRouterFunction().route(request);
         if (handlerFunctionOptional.isPresent()) {
+            logger.info("Found router function: Call handler for path");
             return handlerFunctionOptional.get().handle(request);
         }
         logger.warn("No HandlerFunction found for path={}", path);
