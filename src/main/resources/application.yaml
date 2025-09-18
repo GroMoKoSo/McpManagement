@@ -27,7 +27,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: localhost:9000/realms/gromokoso
+          issuer-uri: http://localhost:9000/realms/GroMoKoSo
     realm: gromokoso
 
 ---
@@ -37,7 +37,7 @@ spring:
       on-profile: prod
   server:
     base-url: https://zdh-swa-muenker.zdh.thm.de
-    mcp: /gromokoso_mcpManagement
+    mcp: /gromokoso_mcpmanagement
   security:
     oauth2:
       resourceserver:
