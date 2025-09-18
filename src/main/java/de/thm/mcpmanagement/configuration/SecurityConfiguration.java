@@ -30,7 +30,7 @@ public class SecurityConfiguration {
         http
                 // Protect all endpoints with OAuth2
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/.well-known/**").permitAll()
+                        .requestMatchers("/.well-known/**", "/sse").permitAll()
                         .anyRequest().authenticated()
                 )
 
