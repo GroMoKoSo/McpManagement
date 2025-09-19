@@ -1,10 +1,13 @@
 spring:
   application:
     name: mcpmanagement
+  # Disable the autoconfigured mcp server since we are managing the server instances ourselves
   ai:
     mcp:
       server:
         enabled: false
+        streamable-http:
+          mcp-endpoint: "/mcp"
   security:
     oauth2:
       resourceserver:
@@ -22,6 +25,7 @@ logging:
     io.modelcontextprotocol: DEBUG
 
 ---
+# Preconfigured profile for local testing
 spring:
   config:
     activate:
@@ -37,6 +41,7 @@ spring:
     realm: gromokoso
 
 ---
+# Preconfigured profile for deployment to the swa thm server
 spring:
   config:
     activate:

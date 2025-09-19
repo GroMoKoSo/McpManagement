@@ -6,6 +6,7 @@ import io.modelcontextprotocol.server.McpAsyncServer;
 import io.modelcontextprotocol.server.McpServer;
 import io.modelcontextprotocol.server.McpServerFeatures;
 import io.modelcontextprotocol.server.transport.WebMvcSseServerTransportProvider;
+import io.modelcontextprotocol.server.transport.WebMvcStreamableServerTransportProvider;
 import io.modelcontextprotocol.spec.McpSchema;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
@@ -25,16 +26,20 @@ public class McpServerService {
 
     private static final Logger logger = LoggerFactory.getLogger(McpServerService.class);
 
+    @Value("${spring.ai.mcp.server.streamable-http.mcp-endpoint}")
+    private String mcp_endpoint;
+
+
     public Map<String, McpAsyncServer> getServers() {
         return servers;
     }
 
-    public Map<String, WebMvcSseServerTransportProvider> getProviders() {
+    public Map<String, WebMvcStreamableServerTransportProvider> getProviders() {
         return providers;
     }
 
     private final Map<String, McpAsyncServer> servers;
-    private final Map<String, WebMvcSseServerTransportProvider> providers;
+    private final Map<String, WebMvcStreamableServerTransportProvider> providers;
 
     public McpServerService() {
         servers = new HashMap<>();
@@ -43,8 +48,10 @@ public class McpServerService {
 
     @PostConstruct
     public void init() {
-        WebMvcSseServerTransportProvider provider = new WebMvcSseServerTransportProvider(new ObjectMapper(),
-                "/mcp/message", "/sse");
+        WebMvcStreamableServerTransportProvider provider = new WebMvcStreamableServerTransportProvider.Builder()
+                .objectMapper(new ObjectMapper())
+                .mcpEndpoint(mcp_endpoint)
+                .build();
 
         McpSchema.ServerCapabilities capabilities = McpSchema.ServerCapabilities.builder()
                 .tools(true)
