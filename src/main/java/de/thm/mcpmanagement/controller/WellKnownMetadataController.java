@@ -20,15 +20,18 @@ public class WellKnownMetadataController {
     @Value("${spring.server.mcp}")
     private String mcp;
 
+    @Value("${spring.ai.mcp.server.streamable-http.mcp-endpoint}")
+    private String streamableHttpMcpEndpoint;
+
     private final Logger logger = LoggerFactory.getLogger(WellKnownMetadataController.class);
 
     @GetMapping(".well-known/oauth-protected-resource")
     public Map<String, Object> getProtectedResourceMetadata() {
-        String resourceUri = "%s%s/sse".formatted(serverBaseUrl, mcp);
+        String resourceUri = serverBaseUrl + mcp + streamableHttpMcpEndpoint;
         logger.debug("Resource URI: {}", resourceUri);
         logger.info("Authorization Server: {}", issuerUri);
         return Map.of(
-                "resource", "%s%s/sse".formatted(serverBaseUrl, mcp),
+                "resource", serverBaseUrl + mcp + streamableHttpMcpEndpoint,
                 "authorization_servers", new String[]{issuerUri}
         );
     }

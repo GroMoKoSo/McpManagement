@@ -11,6 +11,14 @@ import org.springframework.web.servlet.function.ServerResponse;
 
 import java.util.Optional;
 
+/**
+ * Proxies mcp request to the mcp of the current user.
+ * <p>
+ * Uses the JWT access token to determine to which user this request belongs
+ * and redirects the request to the correct mcp server instance.
+ *
+ * @author Josia Menger
+ */
 @Component
 public class McpRequestHandler {
 
@@ -29,7 +37,7 @@ public class McpRequestHandler {
         logger.debug("McpHandler auth={}", auth);
         logger.debug("McpHandler path={}", path);
 
-
+        // TODO: Implement actual routing
         Optional<HandlerFunction<ServerResponse>> handlerFunctionOptional = mcpServerService.getProviders().get("test").getRouterFunction().route(request);
         if (handlerFunctionOptional.isPresent()) {
             logger.info("Found router function: Call handler for path");
