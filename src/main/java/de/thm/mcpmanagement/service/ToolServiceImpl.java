@@ -1,0 +1,53 @@
+package de.thm.mcpmanagement.service;
+
+import de.thm.mcpmanagement.entity.Tool;
+import de.thm.mcpmanagement.entity.ToolSet;
+import de.thm.mcpmanagement.repository.ToolRepository;
+import de.thm.mcpmanagement.repository.ToolSetRepository;
+import dto.ToolDto;
+import dto.ToolSpecificationDto;
+import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.NoSuchElementException;
+
+@Service
+public class ToolServiceImpl implements  ToolService {
+
+    private final ToolRepository toolRepository;
+    private final ToolSetRepository toolSetRepository;
+
+    public ToolServiceImpl(ToolRepository toolRepository, ToolSetRepository toolSetRepository) {
+        this.toolRepository = toolRepository;
+        this.toolSetRepository = toolSetRepository;
+    }
+
+    @Override
+    public boolean putTool(int apiId, @NonNull ToolSpecificationDto toolSpecification) {
+        ToolSet toolSet = new ToolSet(apiId, toolSpecification.name(), toolSpecification.description());
+        ArrayList<Tool> tools = new ArrayList<>();
+        for (ToolDto toolDto : toolSpecification.tools()) {
+            tools.add(new Tool(toolDto.name(), toolDto.description(), toolDto.requestMethod(),
+                    toolDto.endpoint(), toolDto.inputSchema()));
+        }
+        toolSet.setTools(tools);
+        boolean isNew = !toolSetRepository.existsById(apiId);
+        toolSetRepository.save(toolSet);
+        return isNew;
+    }
+
+    @Override
+    public void deleteTool(int toolId) {
+        if (!toolRepository.existsById(toolId)) {
+            throw new NoSuchElementException("Tool with id " + toolId + " does not exist");
+        }
+        toolRepository.deleteById(toolId);
+    }
+
+    @Override
+    public void updateToolList(String userId) {
+        // TODO: Implement tool update
+        System.out.println("Tool list for user " + userId + " updated");
+    }
+}
