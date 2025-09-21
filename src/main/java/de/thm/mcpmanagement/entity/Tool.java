@@ -1,5 +1,6 @@
 package de.thm.mcpmanagement.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,8 @@ public class Tool {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     @ManyToOne
+    @JoinColumn(name = "tool_id")
+    @JsonBackReference
     private ToolSet toolSet;
     private String name;
     private String description;

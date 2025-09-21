@@ -1,21 +1,32 @@
 package de.thm.mcpmanagement.controller;
 
+import de.thm.mcpmanagement.entity.ToolSet;
 import de.thm.mcpmanagement.service.ToolService;
 import dto.ToolSpecificationDto;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.NoSuchElementException;
 
-@Controller
+@RestController
 public class ToolControllerImpl implements ToolController {
 
     private final ToolService toolService;
 
     public ToolControllerImpl(ToolService toolService) {
         this.toolService = toolService;
+    }
+
+    @Override
+    public ToolSet[] getTools() {
+        return toolService.getTools();
+    }
+
+    @Override
+    public ToolSet getTool(int id) {
+        return toolService.getTool(id);
     }
 
     @Override

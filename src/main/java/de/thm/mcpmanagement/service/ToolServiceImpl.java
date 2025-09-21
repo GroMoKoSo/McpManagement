@@ -24,14 +24,24 @@ public class ToolServiceImpl implements  ToolService {
     }
 
     @Override
+    public ToolSet[] getTools() {
+        ArrayList<ToolSet> toolSets = new ArrayList<>();
+        toolSetRepository.findAll().forEach(toolSets::add);
+        return toolSets.toArray(new ToolSet[0]);
+    }
+
+    @Override
+    public ToolSet getTool(int toolId) {
+        return toolSetRepository.findById(toolId).orElseThrow(() -> new NoSuchElementException("Tool with id " + toolId + " does not exist"));
+    }
+
+    @Override
     public boolean putTool(int apiId, @NonNull ToolSpecificationDto toolSpecification) {
         ToolSet toolSet = new ToolSet(apiId, toolSpecification.name(), toolSpecification.description());
-        ArrayList<Tool> tools = new ArrayList<>();
         for (ToolDto toolDto : toolSpecification.tools()) {
-            tools.add(new Tool(toolDto.name(), toolDto.description(), toolDto.requestMethod(),
+            toolSet.addTool(new Tool(toolDto.name(), toolDto.description(), toolDto.requestMethod(),
                     toolDto.endpoint(), toolDto.inputSchema()));
         }
-        toolSet.setTools(tools);
         boolean isNew = !toolSetRepository.existsById(apiId);
         toolSetRepository.save(toolSet);
         return isNew;

@@ -1,11 +1,18 @@
 package de.thm.mcpmanagement.controller;
 
+import de.thm.mcpmanagement.entity.ToolSet;
 import dto.ToolSpecificationDto;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 public interface ToolController {
+
+    @GetMapping("/tools")
+    ToolSet[] getTools();
+
+    @GetMapping("/tools/{id}")
+    ToolSet getTool(@PathVariable(name = "id") int id);
 
     @PutMapping("/tools/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
