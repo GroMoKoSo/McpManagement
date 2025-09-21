@@ -11,11 +11,11 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfiguration {
+public class SecurityConfig {
 
     private final OAuthChallengeEntryPoint challengeEntryPoint;
 
-    public SecurityConfiguration(OAuthChallengeEntryPoint challengeEntryPoint) {
+    public SecurityConfig(OAuthChallengeEntryPoint challengeEntryPoint) {
         this.challengeEntryPoint = challengeEntryPoint;
     }
 
@@ -24,7 +24,7 @@ public class SecurityConfiguration {
         http
                 // Protect all endpoints with OAuth2
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/.well-known/**").permitAll()
+                        .requestMatchers("/.well-known/**", "swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated()
                 )
 

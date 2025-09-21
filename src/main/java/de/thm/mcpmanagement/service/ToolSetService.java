@@ -1,7 +1,7 @@
 package de.thm.mcpmanagement.service;
 
+import de.thm.mcpmanagement.dto.ToolSpecificationDto;
 import de.thm.mcpmanagement.entity.ToolSet;
-import dto.ToolSpecificationDto;
 
 public interface ToolSetService {
 

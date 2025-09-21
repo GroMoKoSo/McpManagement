@@ -1,11 +1,11 @@
 package de.thm.mcpmanagement.service;
 
+import de.thm.mcpmanagement.dto.ToolDto;
+import de.thm.mcpmanagement.dto.ToolSpecificationDto;
 import de.thm.mcpmanagement.entity.Tool;
 import de.thm.mcpmanagement.entity.ToolSet;
 import de.thm.mcpmanagement.repository.ToolRepository;
 import de.thm.mcpmanagement.repository.ToolSetRepository;
-import dto.ToolDto;
-import dto.ToolSpecificationDto;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 

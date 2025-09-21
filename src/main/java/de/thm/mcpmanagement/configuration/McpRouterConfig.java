@@ -16,7 +16,7 @@ import org.springframework.web.servlet.function.ServerResponse;
  * @author Josia Menger
  */
 @Configuration
-public class McpRouterConfiguration {
+public class McpRouterConfig {
 
     @Value("${spring.ai.mcp.server.streamable-http.mcp-endpoint}")
     private String mcp_endpoint;
