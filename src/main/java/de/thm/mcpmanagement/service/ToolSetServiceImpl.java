@@ -13,30 +13,30 @@ import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
 @Service
-public class ToolServiceImpl implements  ToolService {
+public class ToolSetServiceImpl implements ToolSetService {
 
     private final ToolRepository toolRepository;
     private final ToolSetRepository toolSetRepository;
 
-    public ToolServiceImpl(ToolRepository toolRepository, ToolSetRepository toolSetRepository) {
+    public ToolSetServiceImpl(ToolRepository toolRepository, ToolSetRepository toolSetRepository) {
         this.toolRepository = toolRepository;
         this.toolSetRepository = toolSetRepository;
     }
 
     @Override
-    public ToolSet[] getTools() {
+    public ToolSet[] getToolSets() {
         ArrayList<ToolSet> toolSets = new ArrayList<>();
         toolSetRepository.findAll().forEach(toolSets::add);
         return toolSets.toArray(new ToolSet[0]);
     }
 
     @Override
-    public ToolSet getTool(int toolId) {
+    public ToolSet getToolSets(int toolId) {
         return toolSetRepository.findById(toolId).orElseThrow(() -> new NoSuchElementException("Tool with id " + toolId + " does not exist"));
     }
 
     @Override
-    public boolean putTool(int apiId, @NonNull ToolSpecificationDto toolSpecification) {
+    public boolean putToolSet(int apiId, @NonNull ToolSpecificationDto toolSpecification) {
         ToolSet toolSet = new ToolSet(apiId, toolSpecification.name(), toolSpecification.description());
         for (ToolDto toolDto : toolSpecification.tools()) {
             toolSet.addTool(new Tool(toolDto.name(), toolDto.description(), toolDto.requestMethod(),
@@ -48,15 +48,15 @@ public class ToolServiceImpl implements  ToolService {
     }
 
     @Override
-    public void deleteTool(int toolId) {
+    public void deleteToolSet(int toolId) {
         if (!toolRepository.existsById(toolId)) {
             throw new NoSuchElementException("Tool with id " + toolId + " does not exist");
         }
-        toolRepository.deleteById(toolId);
+        toolSetRepository.deleteById(toolId);
     }
 
     @Override
-    public void updateToolList(String userId) {
+    public void updateToolSetList(String userId) {
         // TODO: Implement tool update
         System.out.println("Tool list for user " + userId + " updated");
     }
