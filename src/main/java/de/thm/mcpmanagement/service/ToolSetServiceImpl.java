@@ -39,7 +39,7 @@ public class ToolSetServiceImpl implements ToolSetService {
     public boolean putToolSet(int apiId, @NonNull ToolSpecificationDto toolSpecification) {
         ToolSet toolSet = new ToolSet(apiId, toolSpecification.name(), toolSpecification.description());
         for (ToolDto toolDto : toolSpecification.tools()) {
-            toolSet.addTool(new Tool(toolDto.name(), toolDto.description(), toolDto.requestMethod(),
+            toolSet.addTool(new Tool(toolDto.title(), toolDto.description(), toolDto.requestMethod(),
                     toolDto.endpoint(), toolDto.inputSchema()));
         }
         boolean isNew = !toolSetRepository.existsById(apiId);
