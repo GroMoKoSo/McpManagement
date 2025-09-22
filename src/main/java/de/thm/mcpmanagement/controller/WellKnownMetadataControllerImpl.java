@@ -10,14 +10,11 @@ import java.util.Map;
 @RestController()
 public class WellKnownMetadataControllerImpl implements WellKnownMetadataController {
 
-    @Value("${spring.server.base-url}")
-    private String serverBaseUrl;
+    @Value("${spring.subservices.mcp-management.url}")
+    private String mcpManagement;
 
     @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
     private String issuerUri;
-
-    @Value("${spring.server.mcp}")
-    private String mcp;
 
     @Value("${spring.ai.mcp.server.streamable-http.mcp-endpoint}")
     private String streamableHttpMcpEndpoint;
@@ -26,11 +23,11 @@ public class WellKnownMetadataControllerImpl implements WellKnownMetadataControl
 
     @Override
     public Map<String, Object> getProtectedResourceMetadata() {
-        String resourceUri = serverBaseUrl + mcp + streamableHttpMcpEndpoint;
+        String resourceUri = mcpManagement + streamableHttpMcpEndpoint;
         logger.debug("Resource URI: {}", resourceUri);
         logger.info("Authorization Server: {}", issuerUri);
         return Map.of(
-                "resource", serverBaseUrl + mcp + streamableHttpMcpEndpoint,
+                "resource", mcpManagement + streamableHttpMcpEndpoint,
                 "authorization_servers", new String[]{issuerUri}
         );
     }

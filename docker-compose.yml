@@ -1,0 +1,45 @@
+version: '3.8'
+services:
+  mariadb:
+    image: mariadb:10.11
+    container_name: gromokoso_mcpmanagement_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpw
+      MYSQL_DATABASE: tooldb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: secret
+    ports:
+      - "3306:3306"
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: gromokoso_keycloak
+    restart: always
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      KC_HTTP_ENABLED: true
+      KC_HOSTNAME: http://localhost:9000
+    ports:
+      - "9000:8080"
+    volumes:
+      - "keycloak:/opt/keycloak/data/"
+    command: [ "start-dev"]
+
+  mcpmanagement:
+    build: .
+    container_name: gromokoso_mcpmanagement
+    restart: always
+    depends_on:
+      - mariadb
+      - keycloak
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mariadb://mariadb:3306/tooldb
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: secret
+    ports:
+      - "8080:8080"
+
+volumes:
+  keycloak:

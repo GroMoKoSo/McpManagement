@@ -15,18 +15,15 @@ public class OAuthChallengeEntryPoint implements AuthenticationEntryPoint {
     @Value("${spring.security.realm}")
     private String realm;
 
-    @Value("${spring.server.base-url}")
-    private String serverBaseUrl;
-
-    @Value("${spring.server.mcp}")
-    private String mcp;
+    @Value("${spring.subservices.mcp-management.url}")
+    private String mcpManagement;
 
     @Override
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
 
-        String resourceMetadata = serverBaseUrl + mcp + "/.well-known/oauth-protected-resource";
+        String resourceMetadata = mcpManagement + "/.well-known/oauth-protected-resource";
 
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         String challenge = String.format(
