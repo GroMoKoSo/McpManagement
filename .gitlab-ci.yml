@@ -35,10 +35,10 @@ stages:
     - docker network create internal_net || true
     - >
       docker run 
-      --name $CONTAINER_NAME_db
+      --name ${CONTAINER_NAME}_db
       --restart=always 
       -d --network=internal_net 
-      -v /home/swt2025/$CONTAINER_NAME_db/data:/app/data
+      -v /home/swt2025/${CONTAINER_NAME}_db/data:/app/data
       -e MYSQL_ROOT_PASSWORD=$CI_MYSQL_ROOT
       -e MYSQL_DATABASE=tooldb
       -e MYSQL_USER=$CI_MYSQL_USER
