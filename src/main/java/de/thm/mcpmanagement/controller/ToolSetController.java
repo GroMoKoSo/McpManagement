@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,7 +33,7 @@ public interface ToolSetController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void putToolSet(@Parameter(description = "ID of the tool set to update")
                     @PathVariable(name = "id") int id,
-                    @RequestBody ToolSpecificationDto toolSpecification,
+                    @Valid @RequestBody ToolSpecificationDto toolSpecification,
                     HttpServletResponse response);
 
     @Operation(summary = "Delete a tool set", description = "Delete a tool set by its ID.")
