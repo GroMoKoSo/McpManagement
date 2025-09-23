@@ -7,6 +7,7 @@ cache:
 variables:
   DOCKER_IMAGE_APP: $CI_REGISTRY_IMAGE:latest
   CONTAINER_NAME: "GroMoKoSo_$CI_PROJECT_NAME"
+  CONTAINER_NAME_DB: "GroMoKoSo_${CI_PROJECT_NAME}_db"
   MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
 
 stages:
@@ -31,14 +32,24 @@ stages:
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker stop $CONTAINER_NAME || true
+
+    - docker stop mcpmanagement || true
+    - docker rm mcpmanagment || true
+    - docker stop apimanagement || true
+    - docker rm apimanagement || true
+    - docker stop usermanagement || true
+    - docker rm usermanagement || true
+    - docker stop GroMoKoSo_ || true
+    - docker rm GroMoKoSo_ || true
+    
     - docker rm $CONTAINER_NAME || true
     - docker network create internal_net || true
     - >
       docker run 
-      --name ${CONTAINER_NAME}_db
+      --name $CONTAINER_NAME_DB
       --restart=always 
       -d --network=internal_net 
-      -v /home/swt2025/${CONTAINER_NAME}_db/data:/app/data
+      -v /home/swt2025/$CONTAINER_NAME_DB/data:/app/data
       -e MYSQL_ROOT_PASSWORD=$CI_MYSQL_ROOT
       -e MYSQL_DATABASE=tooldb
       -e MYSQL_USER=$CI_MYSQL_USER
@@ -51,7 +62,7 @@ stages:
       -d --network=internal_net 
       -v /home/swt2025/$CONTAINER_NAME/data:/app/data 
       -e SPRING_PROFILES_ACTIVE=prod
-      -e SPRING_DATASOURCE_URL=jdbc:mariadb://$CONTAINER_NAME_db:3306/tooldb
+      -e SPRING_DATASOURCE_URL=jdbc:mariadb://$CONTAINER_NAME_DB:3306/tooldb
       -e SPRING_DATASOURCE_USERNAME=$CI_MYSQL_USER
       -e SPRING_DATASOURCE_PASSWORD=$CI_MYSQL_PASSWORD
       $DOCKER_IMAGE
