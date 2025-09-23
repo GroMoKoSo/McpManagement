@@ -33,11 +33,6 @@ stages:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker stop $CONTAINER_NAME || true
 
-    - docker stop mcpmanagement || true
-    - docker rm mcpmanagement || true
-    - docker stop spec2tool || true
-    - docker rm spec2tool || true
-    
     - docker rm $CONTAINER_NAME || true
     - docker network create internal_net || true
     - >
