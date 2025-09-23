@@ -34,13 +34,9 @@ stages:
     - docker stop $CONTAINER_NAME || true
 
     - docker stop mcpmanagement || true
-    - docker rm mcpmanagment || true
-    - docker stop apimanagement || true
-    - docker rm apimanagement || true
-    - docker stop usermanagement || true
-    - docker rm usermanagement || true
-    - docker stop GroMoKoSo_ || true
-    - docker rm GroMoKoSo_ || true
+    - docker rm mcpmanagement || true
+    - docker stop spec2tool || true
+    - docker rm spec2tool || true
     
     - docker rm $CONTAINER_NAME || true
     - docker network create internal_net || true
