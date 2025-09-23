@@ -27,12 +27,10 @@ spring:
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: create-only
-    properties.hibernate:
-      show_sql: true
-      use_sql_comments: true
-      format_sql: true
+      ddl-auto: update
+
 ---
+
 # Preconfigured profile for local testing
 spring:
   config:

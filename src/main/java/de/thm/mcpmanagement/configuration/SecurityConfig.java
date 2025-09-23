@@ -24,7 +24,7 @@ public class SecurityConfig {
         http
                 // Protect all endpoints with OAuth2
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/.well-known/**", "swagger-ui/**", "/v3/**").permitAll()
+                        .requestMatchers("/.well-known/**", "/swagger-ui/**", "/v3/**").permitAll()
                         .anyRequest().authenticated()
                 )
 

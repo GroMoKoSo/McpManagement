@@ -23,7 +23,7 @@ import org.springframework.context.annotation.Configuration;
                 )
         ),
         servers = {
-                @Server(url = "${spring.subservices.mcp-management.url}${spring.server.mcp}"),
+                @Server(url = "${spring.subservices.mcp-management.url}"),
         },
         security = {
                 @SecurityRequirement(name = "keycloak_auth"),

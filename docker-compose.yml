@@ -35,7 +35,7 @@ services:
       - mariadb
       - keycloak
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mariadb://mariadb:3306/tooldb
+      SPRING_DATASOURCE_URL: jdbc:mariadb://gromokoso_mcpmanagement_db:3306/tooldb
       SPRING_DATASOURCE_USERNAME: user
       SPRING_DATASOURCE_PASSWORD: secret
     ports:
