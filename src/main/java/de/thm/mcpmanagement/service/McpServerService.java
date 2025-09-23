@@ -2,13 +2,16 @@ package de.thm.mcpmanagement.service;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.thm.mcpmanagement.client.ApiManagementClient;
+import de.thm.mcpmanagement.client.UserManagementClient;
+import de.thm.mcpmanagement.dto.InvokeApiDto;
 import io.modelcontextprotocol.server.McpAsyncServer;
 import io.modelcontextprotocol.server.McpServer;
 import io.modelcontextprotocol.server.McpServerFeatures;
-import io.modelcontextprotocol.server.transport.WebMvcSseServerTransportProvider;
 import io.modelcontextprotocol.server.transport.WebMvcStreamableServerTransportProvider;
 import io.modelcontextprotocol.spec.McpSchema;
 import jakarta.annotation.PostConstruct;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,22 +29,22 @@ public class McpServerService {
 
     private static final Logger logger = LoggerFactory.getLogger(McpServerService.class);
 
-    @Value("${spring.ai.mcp.server.streamable-http.mcp-endpoint}")
-    private String mcp_endpoint;
+    private final ApiManagementClient apiManagementClient;
+    private final UserManagementClient userManagementClient;
+    private final String mcp_endpoint;
 
-
-    public Map<String, McpAsyncServer> getServers() {
-        return servers;
-    }
-
-    public Map<String, WebMvcStreamableServerTransportProvider> getProviders() {
-        return providers;
-    }
-
+    @Getter
     private final Map<String, McpAsyncServer> servers;
+    @Getter
     private final Map<String, WebMvcStreamableServerTransportProvider> providers;
 
-    public McpServerService() {
+    public McpServerService(ApiManagementClient apiManagementClient,
+                            UserManagementClient userManagementClient,
+                            @Value("${spring.ai.mcp.server.streamable-http.mcp-endpoint}") String mcp_endpoint) {
+        this.apiManagementClient = apiManagementClient;
+        this.userManagementClient = userManagementClient;
+        this.mcp_endpoint = mcp_endpoint;
+
         servers = new HashMap<>();
         providers = new HashMap<>();
     }
