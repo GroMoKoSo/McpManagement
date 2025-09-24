@@ -1,12 +1,17 @@
 package de.thm.mcpmanagement.entity;
 
+import de.thm.mcpmanagement.client.ApiManagementClient;
+import de.thm.mcpmanagement.dto.InvokeApiDto;
+import de.thm.mcpmanagement.dto.InvokeApiResponseDto;
 import io.modelcontextprotocol.server.McpServerFeatures;
 import io.modelcontextprotocol.spec.McpSchema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+import javax.security.sasl.AuthenticationException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +25,12 @@ public class ToolFactory {
     private static final char QUERY_PREFIX = 'Q';
     private static final char PATH_PREFIX = 'P';
     private static final char BODY_PREFIX = 'B';
+
+    private final ApiManagementClient apiManagementClient;
+
+    public ToolFactory(ApiManagementClient apiManagementClient) {
+        this.apiManagementClient = apiManagementClient;
+    }
 
    public McpServerFeatures.AsyncToolSpecification create(Tool tool) {
 
@@ -46,11 +57,11 @@ public class ToolFactory {
                .build();
     }
 
-    private String invokeTool(Tool tool, Map<String, Object> args) {
+    private String invokeTool(Tool tool, Map<String, Object> args) throws AuthenticationException {
         Map<String, String> header = new HashMap<>();
         Map<String, String> queryParameter = new HashMap<>();
         Map<String, String> pathParameter = new HashMap<>();
-        Map<String, String> body = new HashMap<>();
+        String body = "";
 
         for (Map.Entry<String, Object> entry : args.entrySet()) {
             var type = entry.getKey().charAt(0);
@@ -59,13 +70,20 @@ public class ToolFactory {
                 case HEADER_PREFIX -> header.put(parameterKey, entry.getValue().toString());
                 case QUERY_PREFIX -> queryParameter.put(parameterKey, entry.getValue().toString());
                 case PATH_PREFIX -> pathParameter.put(parameterKey, entry.getValue().toString());
-                case BODY_PREFIX -> body.put(parameterKey, entry.getValue().toString());
+                default -> body = entry.getValue().toString();
             }
         }
 
-        // TODO: Call ApiManagementClient.invokeApi
+        InvokeApiDto params = new InvokeApiDto(tool.getRequestMethod(), tool.getEndpoint(), header,
+                body, queryParameter, pathParameter);
 
-        System.out.println("Invoking tool: " + tool.getName() + " with args: " + args);
-        return "Hello World!";
+        InvokeApiResponseDto response = apiManagementClient.invokeApi(tool.getId(), params);
+
+        if (response.getHttpStatus() != HttpStatus.OK) {
+            throw new RuntimeException("Api invoke failed with status code %s: %s"
+                    .formatted(response.responseCode(), response.body()));
+        }
+
+        return response.body();
     }
 }
