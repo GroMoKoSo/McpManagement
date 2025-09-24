@@ -3,6 +3,8 @@ package de.thm.mcpmanagement.service;
 import de.thm.mcpmanagement.dto.ToolSpecificationDto;
 import de.thm.mcpmanagement.entity.ToolSet;
 
+import java.util.List;
+
 public interface ToolSetService {
 
     ToolSet[] getToolSets();
@@ -13,5 +15,5 @@ public interface ToolSetService {
 
     void deleteToolSet(int toolId);
 
-    void updateToolSetList(String userId);
+    void updateToolSetList(String userId, List<Integer> newApiIdList);
 }
