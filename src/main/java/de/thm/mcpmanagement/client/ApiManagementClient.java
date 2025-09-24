@@ -35,7 +35,7 @@ public class ApiManagementClient {
 
     public InvokeApiResponseDto invokeApi(int apiId, @NonNull InvokeApiDto invokeApiDto) throws AuthenticationException {
         var responseSpec = client.post()
-                .uri("https://fd460646-8efc-4e44-9594-9d775b307a79.mock.pstmn.io" + "/apis/{apiId}/invoke", apiId)
+                .uri(baseUrl + "/apis/{apiId}/invoke", apiId)
                 .header("Authorization", "Bearer " + tokenProvider.getToken())
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(invokeApiDto)

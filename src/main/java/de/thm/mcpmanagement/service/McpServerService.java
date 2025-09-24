@@ -4,7 +4,6 @@ package de.thm.mcpmanagement.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.thm.mcpmanagement.client.ApiManagementClient;
 import de.thm.mcpmanagement.client.UserManagementClient;
-import de.thm.mcpmanagement.dto.InvokeApiDto;
 import io.modelcontextprotocol.server.McpAsyncServer;
 import io.modelcontextprotocol.server.McpServer;
 import io.modelcontextprotocol.server.McpServerFeatures;
@@ -31,7 +30,7 @@ public class McpServerService {
 
     private final ApiManagementClient apiManagementClient;
     private final UserManagementClient userManagementClient;
-    private final String mcp_endpoint;
+    private final String mcpEndpoint;
 
     @Getter
     private final Map<String, McpAsyncServer> servers;
@@ -40,10 +39,10 @@ public class McpServerService {
 
     public McpServerService(ApiManagementClient apiManagementClient,
                             UserManagementClient userManagementClient,
-                            @Value("${spring.ai.mcp.server.streamable-http.mcp-endpoint}") String mcp_endpoint) {
+                            @Value("${spring.ai.mcp.server.streamable-http.mcp-endpoint}") String mcpEndpoint) {
         this.apiManagementClient = apiManagementClient;
         this.userManagementClient = userManagementClient;
-        this.mcp_endpoint = mcp_endpoint;
+        this.mcpEndpoint = mcpEndpoint;
 
         servers = new HashMap<>();
         providers = new HashMap<>();
@@ -53,7 +52,7 @@ public class McpServerService {
     public void init() {
         WebMvcStreamableServerTransportProvider provider = new WebMvcStreamableServerTransportProvider.Builder()
                 .objectMapper(new ObjectMapper())
-                .mcpEndpoint(mcp_endpoint)
+                .mcpEndpoint(mcpEndpoint)
                 .build();
 
         McpSchema.ServerCapabilities capabilities = McpSchema.ServerCapabilities.builder()
