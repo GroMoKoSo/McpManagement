@@ -15,6 +15,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * This class represents a mcp server from a specific user.
+ * <p>
+ * It wraps the spring-ai implementation of the {@link McpAsyncServer} to get more control over the server.
+ * The implementation allows to route mcp request ourselves and update tools/toolsets on runtime.
+ * <p>
+ * Use the {@link GroMoKoSoMcpServerProvider} to get an instance of this class.
+ *
+ * @author Josia Menger
+ */
 @SuppressWarnings("ReactiveStreamsUnusedPublisher")
 public class GroMoKoSoMcpServer {
 
@@ -26,11 +36,22 @@ public class GroMoKoSoMcpServer {
     private final ToolFactory toolFactory;
     private final ToolSetRepository toolSetRepository;
 
-    public GroMoKoSoMcpServer(McpAsyncServer server,
-                              RouterFunction<ServerResponse> router,
-                              Map<Integer, List<String>> apiIdToToolSet,
-                              ToolFactory toolFactory,
-                              ToolSetRepository toolSetRepository) {
+    /**
+     * <b>ONLY FOR INTERNAL USE!</b>
+     * <p>
+     * To get an instance use {@link GroMoKoSoMcpServerProvider}
+     *
+     * @param server instance of the underlying spring-ai mcp server
+     * @param router router function that is backed into the mcp server
+     * @param apiIdToToolSet map from apiId to the tool names from the current tools of the server
+     * @param toolFactory instance of {@link ToolFactory}
+     * @param toolSetRepository instance of {@link ToolSetRepository}
+     */
+    GroMoKoSoMcpServer(McpAsyncServer server,
+                       RouterFunction<ServerResponse> router,
+                       Map<Integer, List<String>> apiIdToToolSet,
+                       ToolFactory toolFactory,
+                       ToolSetRepository toolSetRepository) {
         this.server = server;
         this.router = router;
         this.apiIdToToolSet = apiIdToToolSet;
@@ -38,6 +59,11 @@ public class GroMoKoSoMcpServer {
         this.toolSetRepository = toolSetRepository;
     }
 
+    /**
+     * Handle a mcp request and return the response.
+     * @param request mcp request
+     * @return mcp response
+     */
     public ServerResponse handle(ServerRequest request) {
         Optional<HandlerFunction<ServerResponse>> response = router.route(request);
         if (response.isPresent()) {
@@ -52,10 +78,23 @@ public class GroMoKoSoMcpServer {
         return ServerResponse.notFound().build();
     }
 
+    /**
+     * Close the mcp server. This closes all open connections to mcp clients.
+     */
     public void close() {
         server.close();
     }
 
+    /**
+     * Update tool sets of the server.
+     * <p>
+     * <b>IMPORTANT</b>:
+     * This method only checks if the complete set has changed (added/ removed).
+     * If you want to check if the spec of the tool set has changed (individual tools from the set),
+     * use {@link #updateToolSet(int, ToolSet, ToolSet)}!
+     *
+     * @param apiIds All tool sets that should be included in the server
+     */
     public void updateToolSetList(List<Integer> apiIds) {
         List<Integer> toolSetsToRemove = new ArrayList<>(apiIdToToolSet.keySet());
         toolSetsToRemove.removeAll(apiIds);
@@ -67,6 +106,16 @@ public class GroMoKoSoMcpServer {
         }
     }
 
+    /**
+     * Update tools from a specific tool set from the server.
+     * <p>
+     * This method check for changes in every tool in the tool set and updates tools (added, removed, changed)
+     * If you want to completely add or remove a tool set,
+     * you should use the more efficient method {@link #updateToolSetList(List)}
+     * @param apiId id of the tool set
+     * @param newToolSet new tool set
+     * @param oldToolSet old tool set
+     */
     public void updateToolSet(int apiId, ToolSet newToolSet, ToolSet oldToolSet) {
         // TODO: Check if tool list for set has changed
         List<String> toolsToRemove = new ArrayList<>(apiIdToToolSet.get(apiId));

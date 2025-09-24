@@ -16,6 +16,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Factory class for creating async mcp tools.
+ * <p>
+ * Tools are the primary way for MCP servers to expose functionality to AI models.
+ * Each tool represents a specific capability.
+ * <p>
+ * This class is a simple wrapper for the {@link McpServerFeatures} builder class
+ * that allows to build mcp tools directly from {@link Tool} objects.
+ * <p>
+ * The class provides factory methods to create:
+ * <ul>
+ *     <li>{@link McpServerFeatures.AsyncToolSpecification} tool specifications
+ *     that can be directly added to a {@link GroMoKoSoMcpServer}</li>
+ * </ul>
+ *
+ * @author Josia Menger
+ */
 @Component
 public class ToolFactory {
 
@@ -24,7 +41,6 @@ public class ToolFactory {
     private static final char HEADER_PREFIX = 'H';
     private static final char QUERY_PREFIX = 'Q';
     private static final char PATH_PREFIX = 'P';
-    private static final char BODY_PREFIX = 'B';
 
     private final ApiManagementClient apiManagementClient;
 
@@ -32,29 +48,36 @@ public class ToolFactory {
         this.apiManagementClient = apiManagementClient;
     }
 
-   public McpServerFeatures.AsyncToolSpecification create(Tool tool) {
+    /**
+     * Builds the AsyncToolSpecification instance.
+     *
+     * @param tool tool spec
+     * @return a new AsyncToolSpecification instance
+     * @throws IllegalArgumentException – if required fields are not set
+     */
+    public McpServerFeatures.AsyncToolSpecification create(Tool tool) {
 
-       var mcpTool = McpSchema.Tool.builder()
-               .name(tool.getName())
-               .description(tool.getDescription())
-               .inputSchema(tool.getInputSchema())
-               .build();
+        var mcpTool = McpSchema.Tool.builder()
+                .name(tool.getName())
+                .description(tool.getDescription())
+                .inputSchema(tool.getInputSchema())
+                .build();
 
-       return McpServerFeatures.AsyncToolSpecification.builder()
-               .tool(mcpTool)
-               .callHandler(((serverExchange, callToolRequest) -> {
-                   try {
-                       String callResult = invokeTool(tool, callToolRequest.arguments());
-                       return Mono.fromSupplier(() -> new McpSchema.CallToolResult(
-                               List.of(new McpSchema.TextContent(callResult)), false));
-                   } catch (Exception e) {
-                       logger.error("Tool {} with parameter {}: Execution failed {}",
-                               callToolRequest.name(), callToolRequest.arguments(), e.getMessage());
-                       return Mono.fromSupplier(() ->new McpSchema.CallToolResult(
-                               List.of(new McpSchema.TextContent(e.getMessage())), true));
-                   }
-               }))
-               .build();
+        return McpServerFeatures.AsyncToolSpecification.builder()
+                .tool(mcpTool)
+                .callHandler(((serverExchange, callToolRequest) -> {
+                    try {
+                        String callResult = invokeTool(tool, callToolRequest.arguments());
+                        return Mono.fromSupplier(() -> new McpSchema.CallToolResult(
+                                List.of(new McpSchema.TextContent(callResult)), false));
+                    } catch (Exception e) {
+                        logger.error("Tool {} with parameter {}: Execution failed {}",
+                                callToolRequest.name(), callToolRequest.arguments(), e.getMessage());
+                        return Mono.fromSupplier(() -> new McpSchema.CallToolResult(
+                                List.of(new McpSchema.TextContent(e.getMessage())), true));
+                    }
+                }))
+                .build();
     }
 
     private String invokeTool(Tool tool, Map<String, Object> args) throws AuthenticationException {
