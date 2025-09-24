@@ -10,6 +10,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -49,14 +50,14 @@ public class ToolSetServiceImpl implements ToolSetService {
 
     @Override
     public void deleteToolSet(int toolId) {
-        if (!toolRepository.existsById(toolId)) {
+        if (!toolSetRepository.existsById(toolId)) {
             throw new NoSuchElementException("Tool with id " + toolId + " does not exist");
         }
         toolSetRepository.deleteById(toolId);
     }
 
     @Override
-    public void updateToolSetList(String userId) {
+    public void updateToolSetList(String userId, List<Integer> newApiIdList) {
         // TODO: Implement tool update
         System.out.println("Tool list for user " + userId + " updated");
     }

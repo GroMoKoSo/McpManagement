@@ -5,9 +5,11 @@ import de.thm.mcpmanagement.entity.ToolSet;
 import de.thm.mcpmanagement.service.ToolSetService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -30,8 +32,10 @@ public class ToolSetControllerImpl implements ToolSetController {
     }
 
     @Override
-    public void putToolSet(int id, ToolSpecificationDto toolSpecification, HttpServletResponse response) {
-        if (toolSetService.putToolSet(id, toolSpecification)) response.setStatus(HttpStatus.CREATED.value());
+    public ResponseEntity<ToolSpecificationDto> putToolSet(int id, ToolSpecificationDto toolSpecification, HttpServletResponse response) {
+        if (toolSetService.putToolSet(id, toolSpecification))
+            return new ResponseEntity<>(toolSpecification, HttpStatus.CREATED);
+        return ResponseEntity.ok(toolSpecification);
     }
 
     @Override
@@ -44,7 +48,7 @@ public class ToolSetControllerImpl implements ToolSetController {
     }
 
     @Override
-    public void updateToolSetList(String id) {
-        toolSetService.updateToolSetList(id);
+    public void updateToolSetList(String id, List<Integer> apis) {
+        toolSetService.updateToolSetList(id, apis);
     }
 }
