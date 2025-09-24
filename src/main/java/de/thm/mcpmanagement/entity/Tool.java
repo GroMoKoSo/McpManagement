@@ -36,4 +36,28 @@ public class Tool {
     public String getName() {
         return title.toLowerCase().replace(" ", "_");
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Tool tool = (Tool) o;
+        return toolSet.equals(tool.toolSet)
+                && title.equals(tool.title)
+                && description.equals(tool.description)
+                && requestMethod.equals(tool.requestMethod)
+                && endpoint.equals(tool.endpoint)
+                && inputSchema.equals(tool.inputSchema);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = toolSet.hashCode();
+        result = 31 * result + title.hashCode();
+        result = 31 * result + description.hashCode();
+        result = 31 * result + requestMethod.hashCode();
+        result = 31 * result + endpoint.hashCode();
+        result = 31 * result + inputSchema.hashCode();
+        return result;
+    }
 }

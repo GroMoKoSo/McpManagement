@@ -3,8 +3,6 @@ package de.thm.mcpmanagement.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 
-import java.util.Map;
-
 public record ToolDto(
         @NotEmpty
         @Schema(description = "Unique identifier for the tool")
@@ -20,5 +18,5 @@ public record ToolDto(
         String endpoint,
         @NotEmpty
         @Schema(description = "JSON Schema defining expected parameters")
-        Map<String, String> inputSchema) {
+        String inputSchema) {
 }
