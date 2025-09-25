@@ -3,9 +3,9 @@ spring:
     name: mcpmanagement
 
   subservices:
-    user-management.url: http://gromokoso_usermanagement:8080
-    mcp-management.url: http://gromokoso_mcpmanagement:8080
-    api-management.url: http://gromokoso_apimanagement:8080
+    user-management.url: http://gromokoso-usermanagement:8080
+    mcp-management.url: http://gromokoso-mcpmanagement:8080
+    api-management.url: http://gromokoso-apimanagement:8080
 
   ai.mcp.server:
         # Disable the autoconfigured mcp server since we are managing the server instances ourselves
@@ -71,9 +71,9 @@ spring:
     activate.on-profile: prod
 
   subservices:
-    user-management.url: https://zdh-swa-muenker.zdh.thm.de/gromokoso_usermanagement
-    mcp-management.url: https://zdh-swa-muenker.zdh.thm.de/gromokoso_mcpmanagement
-    api-management.url: https://zdh-swa-muenker.zdh.thm.de/gromokoso_apimanagement
+    user-management.url: https://zdh-swa-muenker.zdh.thm.de/gromokoso-usermanagement
+    mcp-management.url: https://zdh-swa-muenker.zdh.thm.de/gromokoso-mcpmanagement
+    api-management.url: https://zdh-swa-muenker.zdh.thm.de/gromokoso-apimanagement
 
   security:
     oauth2:

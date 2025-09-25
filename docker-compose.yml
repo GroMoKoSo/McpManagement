@@ -2,7 +2,7 @@ version: '3.8'
 services:
   mariadb:
     image: mariadb:10.11
-    container_name: gromokoso_mcpmanagement_db
+    container_name: gromokoso-mcpmanagement-db
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: rootpw
@@ -14,7 +14,7 @@ services:
 
   keycloak:
     image: quay.io/keycloak/keycloak:latest
-    container_name: gromokoso_keycloak
+    container_name: gromokoso-keycloak
     restart: always
     environment:
       KC_BOOTSTRAP_ADMIN_USERNAME: admin
@@ -29,13 +29,13 @@ services:
 
   mcpmanagement:
     build: .
-    container_name: gromokoso_mcpmanagement
+    container_name: gromokoso-mcpmanagement
     restart: always
     depends_on:
       - mariadb
       - keycloak
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mariadb://gromokoso_mcpmanagement_db:3306/tooldb
+      SPRING_DATASOURCE_URL: jdbc:mariadb://gromokoso-mcpmanagement-db:3306/tooldb
       SPRING_DATASOURCE_USERNAME: user
       SPRING_DATASOURCE_PASSWORD: secret
     ports:
