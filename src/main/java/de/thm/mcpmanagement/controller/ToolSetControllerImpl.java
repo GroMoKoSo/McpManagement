@@ -6,6 +6,9 @@ import de.thm.mcpmanagement.service.ToolSetService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -32,8 +35,16 @@ public class ToolSetControllerImpl implements ToolSetController {
     }
 
     @Override
-    public ResponseEntity<ToolSpecificationDto> putToolSet(int id, ToolSpecificationDto toolSpecification, HttpServletResponse response) {
-        if (toolSetService.putToolSet(id, toolSpecification))
+    public ResponseEntity<ToolSpecificationDto> putToolSet(int id,
+                                                           ToolSpecificationDto toolSpecification,
+                                                           HttpServletResponse response,
+                                                           Authentication authentication) {
+
+        if (!(authentication.getPrincipal() instanceof Jwt))
+            throw new AuthenticationCredentialsNotFoundException("Cannot find bearer token in mcp request");
+        String username = ((Jwt) authentication.getPrincipal()).getClaimAsString("preferred_username");
+
+        if (toolSetService.putToolSet(id, toolSpecification, username))
             return new ResponseEntity<>(toolSpecification, HttpStatus.CREATED);
         return ResponseEntity.ok(toolSpecification);
     }

@@ -4,8 +4,9 @@ import de.thm.mcpmanagement.dto.ToolDto;
 import de.thm.mcpmanagement.dto.ToolSpecificationDto;
 import de.thm.mcpmanagement.entity.Tool;
 import de.thm.mcpmanagement.entity.ToolSet;
-import de.thm.mcpmanagement.repository.ToolRepository;
 import de.thm.mcpmanagement.repository.ToolSetRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +17,14 @@ import java.util.NoSuchElementException;
 @Service
 public class ToolSetServiceImpl implements ToolSetService {
 
-    private final ToolRepository toolRepository;
-    private final ToolSetRepository toolSetRepository;
+    private final static Logger logger = LoggerFactory.getLogger(ToolSetServiceImpl.class);
 
-    public ToolSetServiceImpl(ToolRepository toolRepository, ToolSetRepository toolSetRepository) {
-        this.toolRepository = toolRepository;
+    private final ToolSetRepository toolSetRepository;
+    private final McpServerService mcpServerService;
+
+    public ToolSetServiceImpl(ToolSetRepository toolSetRepository, McpServerService mcpServerService) {
         this.toolSetRepository = toolSetRepository;
+        this.mcpServerService = mcpServerService;
     }
 
     @Override
@@ -37,15 +40,16 @@ public class ToolSetServiceImpl implements ToolSetService {
     }
 
     @Override
-    public boolean putToolSet(int apiId, @NonNull ToolSpecificationDto toolSpecification) {
-        ToolSet toolSet = new ToolSet(apiId, toolSpecification.name(), toolSpecification.description());
+    public boolean putToolSet(int apiId, @NonNull ToolSpecificationDto toolSpecification, String username) {
+        ToolSet newSet = new ToolSet(apiId, toolSpecification.name(), toolSpecification.description());
         for (ToolDto toolDto : toolSpecification.tools()) {
-            toolSet.addTool(new Tool(toolDto.title(), toolDto.description(), toolDto.requestMethod(),
+            newSet.addTool(new Tool(toolDto.title(), toolDto.description(), toolDto.requestMethod(),
                     toolDto.endpoint(), toolDto.inputSchema()));
         }
-        boolean isNew = !toolSetRepository.existsById(apiId);
-        toolSetRepository.save(toolSet);
-        return isNew;
+        ToolSet oldSet = toolSetRepository.findById(apiId).orElse(null);
+        toolSetRepository.save(newSet);
+        if (oldSet != null) mcpServerService.getServerForUser(username).updateToolSet(apiId, newSet, oldSet);
+        return oldSet == null;
     }
 
     @Override
@@ -58,7 +62,7 @@ public class ToolSetServiceImpl implements ToolSetService {
 
     @Override
     public void updateToolSetList(String userId, List<Integer> newApiIdList) {
-        // TODO: Implement tool update
-        System.out.println("Tool list for user " + userId + " updated");
+        logger.info("Updating tool set list for user {}", userId);
+        mcpServerService.getServerForUser(userId).updateToolSetList(newApiIdList);
     }
 }

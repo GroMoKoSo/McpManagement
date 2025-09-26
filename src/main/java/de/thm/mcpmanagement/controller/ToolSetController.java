@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,7 +38,8 @@ public interface ToolSetController {
     ResponseEntity<ToolSpecificationDto> putToolSet(@Parameter(description = "ID of the tool set to update")
                     @PathVariable(name = "id") int id,
                                                     @Valid @RequestBody ToolSpecificationDto toolSpecification,
-                                                    HttpServletResponse response);
+                                                    HttpServletResponse response,
+                                                    Authentication authentication);
 
     @Operation(summary = "Delete a tool set", description = "Delete a tool set by its ID.")
     @ApiResponse(responseCode = "204", description = "Tool set successfully deleted")
