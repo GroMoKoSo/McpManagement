@@ -1,6 +1,7 @@
 spring:
   application:
     name: mcpmanagement
+    version: v0.1
 
   subservices:
     user-management.url: http://gromokoso_usermanagement:8080
@@ -28,6 +29,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+
+  cache:
+    caffeine:
+      spec: maximumSize=500,expireAfterAccess=15m
 
 ---
 
