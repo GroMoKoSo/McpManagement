@@ -10,7 +10,7 @@ import java.util.Map;
 @RestController()
 public class WellKnownMetadataControllerImpl implements WellKnownMetadataController {
 
-    @Value("${spring.subservices.mcp-management.url}")
+    @Value("${spring.subservices.mcp-management.public-url}")
     private String mcpManagement;
 
     @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")

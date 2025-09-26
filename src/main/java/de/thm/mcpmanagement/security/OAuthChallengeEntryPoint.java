@@ -15,7 +15,7 @@ public class OAuthChallengeEntryPoint implements AuthenticationEntryPoint {
     @Value("${spring.security.realm}")
     private String realm;
 
-    @Value("${spring.subservices.mcp-management.url}")
+    @Value("${spring.subservices.mcp-management.public-url}")
     private String mcpManagement;
 
     @Override
