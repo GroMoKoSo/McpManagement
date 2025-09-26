@@ -11,8 +11,6 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
-import javax.security.sasl.AuthenticationException;
-
 /**
  * ApiManagementClient is responsible for communicating with the McpManagementClient subsystem
  *
@@ -33,7 +31,7 @@ public class ApiManagementClient {
         this.client = RestClient.create();
     }
 
-    public InvokeApiResponseDto invokeApi(int apiId, @NonNull InvokeApiDto invokeApiDto) throws AuthenticationException {
+    public InvokeApiResponseDto invokeApi(int apiId, @NonNull InvokeApiDto invokeApiDto) {
         var responseSpec = client.post()
                 .uri(baseUrl + "/apis/{apiId}/invoke", apiId)
                 .header("Authorization", "Bearer " + tokenProvider.getToken())

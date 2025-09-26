@@ -9,7 +9,6 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
-import javax.security.sasl.AuthenticationException;
 import java.util.List;
 
 @Component
@@ -27,7 +26,7 @@ public class UserManagementClient {
         this.client = RestClient.create();
     }
 
-    public List<GetApiListResponseDto> getApisFromUser(String username) throws AuthenticationException {
+    public List<GetApiListResponseDto> getApisFromUser(String username) {
         var responseSpec = client.get()
                 .uri(baseUrl + "/users/{username}/apis", username)
                 .header("Authorization", "Bearer " + tokenProvider.getToken())
