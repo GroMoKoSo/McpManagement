@@ -17,6 +17,11 @@ import org.springframework.util.Assert;
 
 import java.util.List;
 
+/**
+ * Manges {@link GroMoKoSoMcpServer} instances of users
+ *
+ * @author Josia Menger
+ */
 @Service
 public class McpServerServiceImpl implements McpServerService {
 
@@ -37,6 +42,14 @@ public class McpServerServiceImpl implements McpServerService {
         this.version = version;
     }
 
+    /**
+     * Create a new mcp server for a user.
+     * <p>
+     * Uses Spring cache to store created instances.
+     * Instances get destroyed, when not active for the last 15 minutes.
+     * @param username User that owns the server
+     * @return mcp server of the user
+     */
     @NonNull
     @Override
     @Cacheable(value = "servers", key = "#username")
