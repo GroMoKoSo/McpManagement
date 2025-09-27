@@ -19,22 +19,18 @@ public class Tool {
     @JoinColumn(name = "tool_id")
     @JsonBackReference
     private ToolSet toolSet;
-    private String title;
+    private String name;
     private String description;
     private String requestMethod;
     private String endpoint;
     private String inputSchema;
 
-    public Tool(String title, String description, String requestMethod, String endpoint, String inputSchema) {
-        this.title = title;
+    public Tool(String name, String description, String requestMethod, String endpoint, String inputSchema) {
+        this.name = name;
         this.description = description;
         this.requestMethod = requestMethod;
         this.endpoint = endpoint;
         this.inputSchema = inputSchema;
-    }
-
-    public String getName() {
-        return title.toLowerCase().replace(" ", "_");
     }
 
     @Override
@@ -43,7 +39,7 @@ public class Tool {
 
         Tool tool = (Tool) o;
         return toolSet.equals(tool.toolSet)
-                && title.equals(tool.title)
+                && name.equals(tool.name)
                 && description.equals(tool.description)
                 && requestMethod.equals(tool.requestMethod)
                 && endpoint.equals(tool.endpoint)
@@ -53,7 +49,7 @@ public class Tool {
     @Override
     public int hashCode() {
         int result = toolSet.hashCode();
-        result = 31 * result + title.hashCode();
+        result = 31 * result + name.hashCode();
         result = 31 * result + description.hashCode();
         result = 31 * result + requestMethod.hashCode();
         result = 31 * result + endpoint.hashCode();

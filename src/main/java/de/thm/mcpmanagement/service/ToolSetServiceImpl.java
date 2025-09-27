@@ -1,5 +1,7 @@
 package de.thm.mcpmanagement.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.thm.mcpmanagement.dto.ToolDto;
 import de.thm.mcpmanagement.dto.ToolSpecificationDto;
 import de.thm.mcpmanagement.entity.Tool;
@@ -21,10 +23,14 @@ public class ToolSetServiceImpl implements ToolSetService {
 
     private final ToolSetRepository toolSetRepository;
     private final McpServerService mcpServerService;
+    private final ObjectMapper objectMapper;
 
-    public ToolSetServiceImpl(ToolSetRepository toolSetRepository, McpServerService mcpServerService) {
+    public ToolSetServiceImpl(ToolSetRepository toolSetRepository,
+                              McpServerService mcpServerService,
+                              ObjectMapper objectMapper) {
         this.toolSetRepository = toolSetRepository;
         this.mcpServerService = mcpServerService;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -40,11 +46,13 @@ public class ToolSetServiceImpl implements ToolSetService {
     }
 
     @Override
-    public boolean putToolSet(int apiId, @NonNull ToolSpecificationDto toolSpecification, String username) {
+    public boolean putToolSet(int apiId, @NonNull ToolSpecificationDto toolSpecification, String username) throws JsonProcessingException {
         ToolSet newSet = new ToolSet(apiId, toolSpecification.name(), toolSpecification.description());
         for (ToolDto toolDto : toolSpecification.tools()) {
-            newSet.addTool(new Tool(toolDto.title(), toolDto.description(), toolDto.requestMethod(),
-                    toolDto.endpoint(), toolDto.inputSchema()));
+            String schema = objectMapper.writeValueAsString(toolDto.inputSchema());
+
+            newSet.addTool(new Tool(toolDto.name(), toolDto.description(), toolDto.requestMethod(),
+                    toolDto.endpoint(), schema));
         }
         ToolSet oldSet = toolSetRepository.findById(apiId).orElse(null);
         toolSetRepository.save(newSet);

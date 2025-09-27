@@ -1,5 +1,6 @@
 package de.thm.mcpmanagement.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import de.thm.mcpmanagement.dto.ToolSpecificationDto;
 import de.thm.mcpmanagement.entity.ToolSet;
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,7 +40,7 @@ public interface ToolSetController {
                     @PathVariable(name = "id") int id,
                                                     @Valid @RequestBody ToolSpecificationDto toolSpecification,
                                                     HttpServletResponse response,
-                                                    Authentication authentication);
+                                                    Authentication authentication) throws JsonProcessingException;
 
     @Operation(summary = "Delete a tool set", description = "Delete a tool set by its ID.")
     @ApiResponse(responseCode = "204", description = "Tool set successfully deleted")

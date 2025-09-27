@@ -1,5 +1,6 @@
 package de.thm.mcpmanagement.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import de.thm.mcpmanagement.dto.ToolSpecificationDto;
 import de.thm.mcpmanagement.entity.ToolSet;
 import de.thm.mcpmanagement.service.ToolSetService;
@@ -38,7 +39,7 @@ public class ToolSetControllerImpl implements ToolSetController {
     public ResponseEntity<ToolSpecificationDto> putToolSet(int id,
                                                            ToolSpecificationDto toolSpecification,
                                                            HttpServletResponse response,
-                                                           Authentication authentication) {
+                                                           Authentication authentication) throws JsonProcessingException {
 
         if (!(authentication.getPrincipal() instanceof Jwt))
             throw new AuthenticationCredentialsNotFoundException("Cannot find bearer token in mcp request");
