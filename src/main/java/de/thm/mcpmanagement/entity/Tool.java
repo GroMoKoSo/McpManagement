@@ -23,6 +23,7 @@ public class Tool {
     private String description;
     private String requestMethod;
     private String endpoint;
+    @Lob
     private String inputSchema;
 
     public Tool(String name, String description, String requestMethod, String endpoint, String inputSchema) {

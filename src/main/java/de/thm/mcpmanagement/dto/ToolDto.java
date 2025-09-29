@@ -18,7 +18,6 @@ public record ToolDto(
         @NotEmpty
         @Schema(description = "Endpoint URL of the API")
         String endpoint,
-        @NotEmpty
         @Schema(description = "JSON Schema defining expected parameters")
         Map<String, Object> inputSchema) {
 }
