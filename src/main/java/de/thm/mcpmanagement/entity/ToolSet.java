@@ -1,10 +1,14 @@
 package de.thm.mcpmanagement.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import de.thm.mcpmanagement.dto.ToolDto;
+import de.thm.mcpmanagement.dto.ToolSetDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.SneakyThrows;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,4 +38,7 @@ public class ToolSet {
         tools.add(tool);
     }
 
+    public ToolSetDto toDto() {
+        return new ToolSetDto(name, description, tools.stream().map(Tool::toDto).toArray(ToolDto[]::new));
+    }
 }

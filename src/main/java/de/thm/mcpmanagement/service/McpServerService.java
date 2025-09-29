@@ -10,6 +10,8 @@ import org.springframework.lang.NonNull;
  */
 public interface McpServerService {
 
+    boolean isServerForUserRunning(@NonNull String username);
+
     /**
      * Return the server instance of the given user.
      * If no instance was found create a new one with the current active tool sets.
@@ -18,4 +20,5 @@ public interface McpServerService {
      */
     @NonNull
     GroMoKoSoMcpServer getServerForUser(@NonNull String username);
+
 }

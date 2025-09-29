@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 
-public record ToolSpecificationDto(
+public record ToolSetDto(
         @NotEmpty
         @Schema(description = "Unique identifier for the tool set")
         String name,

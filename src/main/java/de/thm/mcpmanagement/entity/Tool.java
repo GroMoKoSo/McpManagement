@@ -1,10 +1,18 @@
 package de.thm.mcpmanagement.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import de.thm.mcpmanagement.dto.ToolDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.Map;
+
+import static com.fasterxml.jackson.databind.type.LogicalType.Map;
 
 @Entity
 @Getter
@@ -56,5 +64,14 @@ public class Tool {
         result = 31 * result + endpoint.hashCode();
         result = 31 * result + inputSchema.hashCode();
         return result;
+    }
+
+    public ToolDto toDto() {
+        try {
+            return new ToolDto(name, description, requestMethod, endpoint,
+                    new ObjectMapper().readValue(inputSchema, new TypeReference<>(){}));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Cannot convert inputSchema; invalid json schema", e);
+        }
     }
 }
