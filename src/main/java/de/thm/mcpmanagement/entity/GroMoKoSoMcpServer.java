@@ -150,6 +150,11 @@ public class GroMoKoSoMcpServer {
     }
 
     private void addToolSet(int apiId) {
+        // Since McpTools are added asynchronously, we first need to check,
+        // if we even know the api at the point of the request, otherwise just drop the request.
+        if (!toolSetRepository.existsById(apiId)) return;
+
+
         List<String> toolNames = new ArrayList<>();
 
         ToolSet toolSet = toolSetRepository.findById(apiId).orElseThrow(() ->
