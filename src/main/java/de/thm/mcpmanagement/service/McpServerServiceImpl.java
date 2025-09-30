@@ -4,7 +4,6 @@ package de.thm.mcpmanagement.service;
 import de.thm.mcpmanagement.client.UserManagementClient;
 import de.thm.mcpmanagement.client.exception.ClientAuthenticationException;
 import de.thm.mcpmanagement.client.exception.ClientNotFoundException;
-import de.thm.mcpmanagement.dto.GetApiListResponseDto;
 import de.thm.mcpmanagement.entity.GroMoKoSoMcpServer;
 import de.thm.mcpmanagement.entity.GroMoKoSoMcpServerProvider;
 import de.thm.mcpmanagement.entity.ToolSet;
@@ -51,9 +50,17 @@ public class McpServerServiceImpl implements McpServerService {
         this.version = version;
     }
 
+    /**
+     * Check if a mcp server instance was already created and is still active for the given user.
+     *
+     * @param username The server owner
+     * @return true if server instance exists
+     */
     public boolean isServerForUserRunning(@NonNull String username) {
         Cache cache = cacheManager.getCache("servers");
-        return cache != null && cache.get(username) != null;
+        boolean isRunning = cache != null && cache.get(username) != null;
+        logger.debug("Checking if server for user {} is running: {}", username, isRunning);
+        return isRunning;
     }
 
     /**

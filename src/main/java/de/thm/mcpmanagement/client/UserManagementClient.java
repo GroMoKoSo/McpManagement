@@ -24,7 +24,7 @@ public class UserManagementClient {
         this.client = RestClient.create();
     }
 
-    public List<Integer> getApisFromUser(String username, Boolean active) {
+    public List<GetApiListResponseDto> getApisFromUserRaw(String username) {
         try {
             List<GetApiListResponseDto> apis = client.get()
                     .uri(baseUrl + "/users/{username}/apis", username)
@@ -32,10 +32,22 @@ public class UserManagementClient {
                     .retrieve().body(new ParameterizedTypeReference<>() {});
             if (apis == null)
                 throw new NullPointerException("Request was successful, but request could not be parsed or was null");
-            return apis.stream().filter(a -> active == null || a.active() == active)
-                    .map(GetApiListResponseDto::apiId).toList();
+            return apis;
         } catch (Exception e) {
             throw ClientExceptionHandler.handleException(e);
         }
+    }
+
+    public List<Integer> getApisFromUser(String username, Boolean active) {
+        return getApisFromUserRaw(username)
+                .stream().filter(a -> active == null || a.active() == active)
+                .map(GetApiListResponseDto::apiId).toList();
+    }
+
+    public String getApiOrigin(String username, int apiId) {
+        for (var api : getApisFromUserRaw(username)) {
+            if (api.apiId() == apiId) return api.accessVia();
+        }
+        return null;
     }
 }

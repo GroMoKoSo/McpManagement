@@ -11,8 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
-import javax.security.sasl.AuthenticationException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,10 +35,6 @@ import java.util.Map;
 public class ToolFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(ToolFactory.class);
-
-    private static final char HEADER_PREFIX = 'H';
-    private static final char QUERY_PREFIX = 'Q';
-    private static final char PATH_PREFIX = 'P';
 
     private final ApiManagementClient apiManagementClient;
 
@@ -81,27 +75,18 @@ public class ToolFactory {
                 .build();
     }
 
-    private String invokeTool(Tool tool, Map<String, Object> args) throws AuthenticationException {
-        Map<String, String> header = new HashMap<>();
-        Map<String, String> queryParameter = new HashMap<>();
-        Map<String, String> pathParameter = new HashMap<>();
-        String body = "";
-
-        for (Map.Entry<String, Object> entry : args.entrySet()) {
-            var type = entry.getKey().charAt(0);
-            var parameterKey = entry.getKey().substring(2);
-            switch (type) {
-                case HEADER_PREFIX -> header.put(parameterKey, entry.getValue().toString());
-                case QUERY_PREFIX -> queryParameter.put(parameterKey, entry.getValue().toString());
-                case PATH_PREFIX -> pathParameter.put(parameterKey, entry.getValue().toString());
-                default -> body = entry.getValue().toString();
-            }
-        }
+    // TODO
+    private String invokeTool(Tool tool, Map<String, Object> args) {
+        Object header = args.getOrDefault("header" ,Map.of());
+        Object queryParameter = args.getOrDefault("query" ,Map.of());
+        Object pathParameter = args.getOrDefault("path" ,Map.of());
+        Object body = args.getOrDefault("body" ,Map.of());
 
         InvokeApiDto params = new InvokeApiDto(tool.getRequestMethod(), tool.getEndpoint(), header,
                 body, queryParameter, pathParameter);
 
-        InvokeApiResponseDto response = apiManagementClient.invokeApi(tool.getId(), params);
+        InvokeApiResponseDto response = apiManagementClient.invokeApi(tool.getToolSet().getId(),
+                tool.getToolSet().isGroupTool(), tool.getToolSet().getAccessVia(), params);
 
         if (response.getHttpStatus() != HttpStatus.OK) {
             throw new RuntimeException("Api invoke failed with status code %s: %s"

@@ -59,7 +59,13 @@ public class ToolSetServiceImpl implements ToolSetService {
     @Override
     public boolean putToolSet(int apiId, @NonNull ToolSetDto toolSpecification, String username) {
         try {
-            ToolSet newSet = new ToolSet(apiId, toolSpecification.name(), toolSpecification.description());
+            String accessVia = userManagementClient.getApiOrigin(username, apiId);
+            if (accessVia == null) throw new NullPointerException("Cannot retrieve origin of api " + apiId);
+            boolean isGroupTool = !accessVia.equals("user");
+            accessVia = isGroupTool ? accessVia : username;
+
+            ToolSet newSet = new ToolSet(apiId, toolSpecification.name(), toolSpecification.description(),
+                    accessVia, isGroupTool);
             for (ToolDto toolDto : toolSpecification.tools()) {
                 String schema = objectMapper.writeValueAsString(toolDto.inputSchema());
 
