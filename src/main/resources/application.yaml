@@ -1,6 +1,7 @@
 spring:
   application:
     name: mcpmanagement
+    version: v0.1
 
   subservices:
     user-management.url: http://gromokoso-usermanagement:8080
@@ -16,8 +17,8 @@ spring:
   security:
     oauth2:
       resourceserver.jwt:
-        issuer-uri: http://localhost:9000/realms/GroMoKoSo
-        jwk-set-uri: http://gromokoso_keycloak:8080/realms/GroMoKoSo/protocol/openid-connect/certs
+        issuer-uri: http://localhost:9000/realms/gromokoso
+        jwk-set-uri: http://gromokoso-keycloak:8080/realms/gromokoso/protocol/openid-connect/certs
     realm: gromokoso
 
   datasource:
@@ -29,40 +30,10 @@ spring:
     hibernate:
       ddl-auto: update
 
----
+  cache:
+    caffeine:
+      spec: maximumSize=500,expireAfterAccess=15m
 
-# Preconfigured profile for local testing
-spring:
-  config:
-    activate.on-profile: dev
-
-  subservices:
-    mcp-management.url: http://localhost:8080
-
-  security:
-    oauth2:
-      resourceserver.jwt:
-        issuer-uri: http://localhost:9000/realms/GroMoKoSo
-        jwk-set-uri: http://localhost:9000/realms/GroMoKoSo/protocol/openid-connect/certs
-    realm: gromokoso
-
-  datasource:
-    url: jdbc:h2:mem:mcpManagementDb
-    username: admin
-    password: admin
-    driverClassName: org.h2.Driver
-  jpa:
-    properties.hibernate:
-      show_sql: true
-      use_sql_comments: true
-      format_sql: true
-
-logging:
-  level:
-    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
-    de.thm.mcpmanagement: DEBUG
-    io.modelcontextprotocol: DEBUG
-    org.hibernate.SQL: DEBUG
 ---
 
 # Preconfigured profile for deployment to the swa thm server

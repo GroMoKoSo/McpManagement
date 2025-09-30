@@ -1,6 +1,10 @@
 package de.thm.mcpmanagement.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import de.thm.mcpmanagement.dto.ToolDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,21 +23,61 @@ public class Tool {
     @JoinColumn(name = "tool_id")
     @JsonBackReference
     private ToolSet toolSet;
-    private String title;
+    private String name;
     private String description;
     private String requestMethod;
     private String endpoint;
+    @Lob
     private String inputSchema;
 
-    public Tool(String title, String description, String requestMethod, String endpoint, String inputSchema) {
-        this.title = title;
+    public Tool(String name, String description, String requestMethod, String endpoint, String inputSchema) {
+        this.name = name;
         this.description = description;
         this.requestMethod = requestMethod;
         this.endpoint = endpoint;
         this.inputSchema = inputSchema;
     }
 
-    public String getName() {
-        return title.toLowerCase().replace(" ", "_");
+    /**
+     * Returns a name that is unique in the system.
+     * This is important for the mcp server,
+     * since the tool name is used in the mcp protocol as the primary identification of a tool.
+     * @return unique tool name
+     */
+    public String getMcpName() {
+        return this.id + "_" + this.name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Tool tool = (Tool) o;
+        return toolSet.equals(tool.toolSet)
+                && name.equals(tool.name)
+                && description.equals(tool.description)
+                && requestMethod.equals(tool.requestMethod)
+                && endpoint.equals(tool.endpoint)
+                && inputSchema.equals(tool.inputSchema);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = toolSet.hashCode();
+        result = 31 * result + name.hashCode();
+        result = 31 * result + description.hashCode();
+        result = 31 * result + requestMethod.hashCode();
+        result = 31 * result + endpoint.hashCode();
+        result = 31 * result + inputSchema.hashCode();
+        return result;
+    }
+
+    public ToolDto toDto() {
+        try {
+            return new ToolDto(name, description, requestMethod, endpoint,
+                    new ObjectMapper().readValue(inputSchema, new TypeReference<>(){}));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Cannot convert inputSchema; invalid json schema", e);
+        }
     }
 }

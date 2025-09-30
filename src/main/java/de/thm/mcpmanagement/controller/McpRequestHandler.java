@@ -3,13 +3,12 @@ package de.thm.mcpmanagement.controller;
 import de.thm.mcpmanagement.service.McpServerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.function.HandlerFunction;
 import org.springframework.web.servlet.function.ServerRequest;
 import org.springframework.web.servlet.function.ServerResponse;
-
-import java.util.Optional;
 
 /**
  * Proxies mcp request to the mcp of the current user.
@@ -26,24 +25,33 @@ public class McpRequestHandler {
 
 
     private final McpServerService mcpServerService;
+    private final JwtDecoder jwtDecoder;
 
-    public McpRequestHandler(McpServerService mcpServerService) {
+
+    public McpRequestHandler(McpServerService mcpServerService, JwtDecoder jwtDecoder) {
         this.mcpServerService = mcpServerService;
+        this.jwtDecoder = jwtDecoder;
     }
 
-    public ServerResponse handleRequest(ServerRequest request) throws Exception {
-        String path = request.path();
-        String auth = request.headers().firstHeader("Authorization");
-        logger.debug("McpHandler auth={}", auth);
-        logger.debug("McpHandler path={}", path);
+    public ServerResponse handleRequest(ServerRequest request) {
 
-        // TODO: Implement actual routing
-        Optional<HandlerFunction<ServerResponse>> handlerFunctionOptional = mcpServerService.getProviders().get("test").getRouterFunction().route(request);
-        if (handlerFunctionOptional.isPresent()) {
-            logger.info("Found router function: Call handler for path");
-            return handlerFunctionOptional.get().handle(request);
+        Jwt token = getToken(request);
+        String username = token.getClaimAsString("preferred_username");
+
+        try {
+            return mcpServerService.getServerForUser(username).handle(request);
+        } catch (Exception e) {
+            logger.error("Error handling mcp request", e);
+            return ServerResponse.status(500).build();
         }
-        logger.warn("No HandlerFunction found for path={}", path);
-        return ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+
+    private Jwt getToken(ServerRequest request) {
+        String auth = request.headers().firstHeader("Authorization");
+        if (auth == null) {
+            logger.error("Missing Authorization header in mcp request");
+            throw new AuthenticationCredentialsNotFoundException("Cannot find bearer token in mcp request");
+        }
+        return jwtDecoder.decode(auth.replace("Bearer ", ""));
     }
 }
