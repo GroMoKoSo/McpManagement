@@ -105,7 +105,8 @@ public class GroMoKoSoMcpServerProvider {
             Assert.notNull(tool, "Tool must not be null");
 
             tools.add(toolFactory.create(tool));
-            List<String> toolNames = apiIdToToolName.computeIfAbsent(tool.getId(), k -> new ArrayList<>());
+            List<String> toolNames = apiIdToToolName
+                    .computeIfAbsent(tool.getToolSet().getId(), k -> new ArrayList<>());
             toolNames.add(tool.getName());
             return this;
         }
