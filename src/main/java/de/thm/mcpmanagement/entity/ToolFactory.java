@@ -1,11 +1,8 @@
 package de.thm.mcpmanagement.entity;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import de.thm.mcpmanagement.client.ApiManagementClient;
 import de.thm.mcpmanagement.dto.InvokeApiDto;
 import de.thm.mcpmanagement.dto.InvokeApiResponseDto;
-import de.thm.mcpmanagement.service.exception.ServiceError;
 import io.modelcontextprotocol.server.McpServerFeatures;
 import io.modelcontextprotocol.spec.McpSchema;
 import org.slf4j.Logger;
@@ -39,12 +36,9 @@ public class ToolFactory {
     private static final Logger logger = LoggerFactory.getLogger(ToolFactory.class);
 
     private final ApiManagementClient apiManagementClient;
-    private final ObjectMapper objectMapper;
 
-    public ToolFactory(ApiManagementClient apiManagementClient,
-                       ObjectMapper objectMapper) {
+    public ToolFactory(ApiManagementClient apiManagementClient) {
         this.apiManagementClient = apiManagementClient;
-        this.objectMapper = objectMapper;
     }
 
     /**
@@ -102,10 +96,6 @@ public class ToolFactory {
 
         logger.info("Tool invoke was successful! Returned {}: {}", response.getHttpStatus(), response.body());
 
-        try {
-            return objectMapper.writeValueAsString(response.body());
-        } catch (JsonProcessingException e) {
-            throw new ServiceError("Cannot convert response to string.", e);
-        }
+       return response.body();
     }
 }
