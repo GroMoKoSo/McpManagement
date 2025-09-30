@@ -1,6 +1,5 @@
 package de.thm.mcpmanagement.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import de.thm.mcpmanagement.dto.ToolSetDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -53,7 +52,7 @@ public interface ToolSetController {
     @Operation(summary = "Notify a user's tool set list has changed",
             description = "Signal that a specific user's tool set list has been updated. " +
             "The body MUST contain a list of all api ids that should be available to the user")
-    @ApiResponse(responseCode = "200", description = "Notification successful")
+    @ResponseStatus(HttpStatus.ACCEPTED)
     @PostMapping("/users/{id}/toolsets/list-changed")
     void updateToolSetList(@Parameter(description = "ID of the user whose tool set list has changed")
                            @PathVariable(name = "id") String id, @Valid @RequestBody List<Integer> apis);
