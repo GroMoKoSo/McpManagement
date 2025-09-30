@@ -1,13 +1,15 @@
 package de.thm.mcpmanagement.entity;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.thm.mcpmanagement.client.ApiManagementClient;
 import de.thm.mcpmanagement.dto.InvokeApiDto;
 import de.thm.mcpmanagement.dto.InvokeApiResponseDto;
+import de.thm.mcpmanagement.service.exception.ServiceError;
 import io.modelcontextprotocol.server.McpServerFeatures;
 import io.modelcontextprotocol.spec.McpSchema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
@@ -37,9 +39,12 @@ public class ToolFactory {
     private static final Logger logger = LoggerFactory.getLogger(ToolFactory.class);
 
     private final ApiManagementClient apiManagementClient;
+    private final ObjectMapper objectMapper;
 
-    public ToolFactory(ApiManagementClient apiManagementClient) {
+    public ToolFactory(ApiManagementClient apiManagementClient,
+                       ObjectMapper objectMapper) {
         this.apiManagementClient = apiManagementClient;
+        this.objectMapper = objectMapper;
     }
 
     /**
@@ -88,11 +93,19 @@ public class ToolFactory {
         InvokeApiResponseDto response = apiManagementClient.invokeApi(tool.getToolSet().getId(),
                 tool.getToolSet().isGroupTool(), tool.getToolSet().getAccessVia(), params);
 
-        if (response.getHttpStatus() != HttpStatus.OK) {
+        if (!response.getHttpStatus().is2xxSuccessful()) {
+            logger.warn("Tool invocation failed, external api returned error code {}: {}",
+                    response.getHttpStatus(), response.body());
             throw new RuntimeException("Api invoke failed with status code %s: %s"
                     .formatted(response.responseCode(), response.body()));
         }
 
-        return response.body();
+        logger.info("Tool invoke was successful! Returned {}: {}", response.getHttpStatus(), response.body());
+
+        try {
+            return objectMapper.writeValueAsString(response.body());
+        } catch (JsonProcessingException e) {
+            throw new ServiceError("Cannot convert response to string.", e);
+        }
     }
 }
