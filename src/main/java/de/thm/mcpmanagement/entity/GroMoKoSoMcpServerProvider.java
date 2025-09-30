@@ -9,6 +9,7 @@ import io.modelcontextprotocol.server.transport.WebMvcStreamableServerTransportP
 import io.modelcontextprotocol.spec.McpSchema;
 import io.modelcontextprotocol.util.Assert;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -103,11 +104,13 @@ public class GroMoKoSoMcpServerProvider {
          */
         public GroMoKoSoMcpServerSpecification addTool(Tool tool) {
             Assert.notNull(tool, "Tool must not be null");
+            if (isToolAlreadyInServer(tool))
+                throw new DuplicateKeyException("Tool with name %s already exists".formatted(tool.getMcpName()));
 
             tools.add(toolFactory.create(tool));
             List<String> toolNames = apiIdToToolName
                     .computeIfAbsent(tool.getToolSet().getId(), k -> new ArrayList<>());
-            toolNames.add(tool.getName());
+            toolNames.add(tool.getMcpName());
             return this;
         }
 
@@ -135,6 +138,15 @@ public class GroMoKoSoMcpServerProvider {
 
             return new GroMoKoSoMcpServer(server, provider.getRouterFunction(), apiIdToToolName,
                     toolFactory, toolSetRepository);
+        }
+
+        private boolean isToolAlreadyInServer(Tool tool) {
+            for (var toolSpec : tools) {
+                if (toolSpec.tool().name().equals(tool.getMcpName())) {
+                    return true;
+                }
+            }
+            return false;
         }
 
     }

@@ -10,10 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Map;
-
-import static com.fasterxml.jackson.databind.type.LogicalType.Map;
-
 @Entity
 @Getter
 @Setter
@@ -40,6 +36,16 @@ public class Tool {
         this.requestMethod = requestMethod;
         this.endpoint = endpoint;
         this.inputSchema = inputSchema;
+    }
+
+    /**
+     * Returns a name that is unique in the system.
+     * This is important for the mcp server,
+     * since the tool name is used in the mcp protocol as the primary identification of a tool.
+     * @return unique tool name
+     */
+    public String getMcpName() {
+        return this.id + "_" + this.name;
     }
 
     @Override

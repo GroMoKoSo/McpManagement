@@ -58,7 +58,8 @@ public class ToolFactory {
     public McpServerFeatures.AsyncToolSpecification create(Tool tool) {
 
         var mcpTool = McpSchema.Tool.builder()
-                .name(tool.getName())
+                // we use getMcpName to ensure the name is always unique
+                .name(tool.getMcpName())
                 .description(tool.getDescription())
                 .inputSchema(tool.getInputSchema())
                 .build();
