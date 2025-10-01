@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.thm.mcpmanagement.dto.ToolDto;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,6 +15,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Tool {
 
     @Id
@@ -70,6 +72,19 @@ public class Tool {
         result = 31 * result + endpoint.hashCode();
         result = 31 * result + inputSchema.hashCode();
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Tool{" +
+                "id=" + id +
+                ", toolSet=" + toolSet +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", requestMethod='" + requestMethod + '\'' +
+                ", endpoint='" + endpoint + '\'' +
+                ", inputSchema='" + inputSchema + '\'' +
+                '}';
     }
 
     public ToolDto toDto() {

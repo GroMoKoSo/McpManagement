@@ -73,10 +73,8 @@ public class ToolSetServiceImpl implements ToolSetService {
                         toolDto.endpoint(), schema));
             }
             ToolSet oldSet = toolSetRepository.findById(apiId).orElse(null);
-            logger.debug("update toolset; new tool list {}, old tool list {}",
-                    newSet.getTools().stream().map(Tool::getId).toString(),
-                    oldSet != null ? oldSet.getTools().stream().map(Tool::getId).toString() : "null");
-            toolSetRepository.save(newSet);
+            if (oldSet != null) oldSet = oldSet.deepCopy();
+            newSet = toolSetRepository.save(newSet);
             if (oldSet != null && mcpServerService.isServerForUserRunning(username))
                 mcpServerService.getServerForUser(username).updateToolSet(apiId, newSet, oldSet);
             return oldSet == null;
