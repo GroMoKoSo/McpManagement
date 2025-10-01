@@ -117,6 +117,10 @@ public class GroMoKoSoMcpServer {
      * @param oldToolSet old tool set
      */
     public void updateToolSet(int apiId, ToolSet newToolSet, ToolSet oldToolSet) {
+        if (oldToolSet == null) {
+            addToolSet(apiId);
+            return;
+        }
         List<String> toolsToRemove = new ArrayList<>(apiIdToToolSet.get(apiId));
         List<Tool> newTools = newToolSet.getTools();
         List<Tool> oldTools = oldToolSet.getTools();

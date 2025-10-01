@@ -75,7 +75,7 @@ public class ToolSetServiceImpl implements ToolSetService {
             ToolSet oldSet = toolSetRepository.findById(apiId).orElse(null);
             if (oldSet != null) oldSet = oldSet.deepCopy();
             newSet = toolSetRepository.save(newSet);
-            if (oldSet != null && mcpServerService.isServerForUserRunning(username))
+            if (mcpServerService.isServerForUserRunning(username))
                 mcpServerService.getServerForUser(username).updateToolSet(apiId, newSet, oldSet);
             return oldSet == null;
         } catch (Exception e) {

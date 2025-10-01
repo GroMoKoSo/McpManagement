@@ -5,7 +5,7 @@ spring:
 
   subservices:
     user-management.url: http://gromokoso-usermanagement:8080
-    mcp-management.url: http://gromokoso-mcpmanagement:8080
+    mcp-management.url: http://localhost:8083
     api-management.url: http://gromokoso-apimanagement:8080
 
   ai.mcp.server:
