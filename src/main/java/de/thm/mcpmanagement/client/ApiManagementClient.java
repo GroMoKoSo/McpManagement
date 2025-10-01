@@ -20,12 +20,10 @@ public class ApiManagementClient {
 
     private final TokenProvider tokenProvider;
     private final RestClient client;
-    private final String baseUrl;
 
     public ApiManagementClient(TokenProvider tokenProvider,
                                @Value("${spring.subservices.api-management.url}") String baseUrl) {
         this.tokenProvider = tokenProvider;
-        this.baseUrl = baseUrl;
         this.client = RestClient.create(baseUrl);
     }
 
@@ -34,7 +32,6 @@ public class ApiManagementClient {
                                           @NonNull InvokeApiDto invokeApiDto) {
         try {
             String query = isGroupApi ? "group" : "user";
-            // TODO Add query parameter for group or user
             return client.post()
                     .uri(uriBuilder -> uriBuilder
                             .path("apis/{apiId}/invoke")

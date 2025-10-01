@@ -74,7 +74,6 @@ public class ToolFactory {
                 .build();
     }
 
-    // TODO
     private String invokeTool(Tool tool, Map<String, Object> args) {
         Object header = args.getOrDefault("header" ,Map.of());
         Object queryParameter = args.getOrDefault("query" ,Map.of());
