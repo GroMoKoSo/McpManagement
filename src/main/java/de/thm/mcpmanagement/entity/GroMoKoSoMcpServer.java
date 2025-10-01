@@ -5,7 +5,6 @@ import io.modelcontextprotocol.server.McpAsyncServer;
 import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.servlet.function.HandlerFunction;
 import org.springframework.web.servlet.function.RouterFunction;
 import org.springframework.web.servlet.function.ServerRequest;
@@ -118,6 +117,10 @@ public class GroMoKoSoMcpServer {
      * @param oldToolSet old tool set
      */
     public void updateToolSet(int apiId, ToolSet newToolSet, ToolSet oldToolSet) {
+        if (oldToolSet == null) {
+            addToolSet(apiId);
+            return;
+        }
         List<String> toolsToRemove = new ArrayList<>(apiIdToToolSet.get(apiId));
         List<Tool> newTools = newToolSet.getTools();
         List<Tool> oldTools = oldToolSet.getTools();
@@ -142,11 +145,11 @@ public class GroMoKoSoMcpServer {
             }
 
             // The tool is already included and has changed
-            server.removeTool(oldTool.getMcpName());
+            removeTool(oldTool.getMcpName());
             addTool(newTool);
         }
 
-        for (String toolName : toolsToRemove) server.removeTool(toolName);
+        for (String toolName : toolsToRemove) removeTool(toolName);
         apiIdToToolSet.put(apiId, newToolSet.getTools().stream().map(Tool::getMcpName).toList());
     }
 
@@ -172,16 +175,22 @@ public class GroMoKoSoMcpServer {
     private void removeToolSet(int apiId) {
         logger.info("Removing ToolSet {} from mcp server {} on runtime", apiId, server.getServerInfo().name());
         for (String toolName : apiIdToToolSet.get(apiId)) {
-            server.removeTool(toolName);
+            removeTool(toolName);
         }
         apiIdToToolSet.remove(apiId);
     }
 
     private void addTool(Tool tool) {
         logger.debug("Adding tool {} to mcp server of {} on runtime", tool.getMcpName(), server.getServerInfo().name());
-        server.addTool(toolFactory.create(tool)).doOnError(e-> {
-            logger.warn("Error adding tool {}: {}", tool.getMcpName(), e.getMessage());
-            throw new DuplicateKeyException("Tool with name " + tool.getMcpName() + " already exists", e);
-        });
+        server.addTool(toolFactory.create(tool)).doOnError( e ->
+            logger.warn("Error adding tool {}: {}", tool.getMcpName(), e.getMessage())
+        ).subscribe();
+    }
+
+    public void removeTool(String toolName) {
+        logger.debug("Removing existing tool {} from mcp server of {} on runtime", toolName, server.getServerInfo().name());
+        server.removeTool(toolName).doOnError(e -> {
+            logger.warn("Error removing tool {}: {}", toolName, e.getMessage());
+        }).subscribe();
     }
 }

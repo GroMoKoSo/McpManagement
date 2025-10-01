@@ -43,4 +43,14 @@ public class ToolSet {
     public ToolSetDto toDto() {
         return new ToolSetDto(name, description, tools.stream().map(Tool::toDto).toArray(ToolDto[]::new));
     }
+
+    public ToolSet deepCopy() {
+        ToolSet clone = new ToolSet(id, name, description, accessVia, isGroupTool);
+
+        for (Tool tool : tools) {
+            clone.addTool(new Tool(tool.getId(), tool.getToolSet(), tool.getName(), tool.getDescription(),
+                    tool.getRequestMethod(), tool.getEndpoint(), tool.getInputSchema()));
+        }
+        return clone;
+    }
 }
